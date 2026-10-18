@@ -164,8 +164,11 @@ async function main() {
       name: "Galaxy Flagship Challenge",
       nameAr: "تحدي جالاكسي فلاجشيب",
       tagline: "Different prize. Different leaderboard. Same skill rules.",
+      taglineAr: "جائزة مختلفة. لوحة مختلفة. نفس قواعد المهارة.",
       description:
         "Independent Samsung-class flagship campaign. Customer pays EGP500, receives EGP500 Delta Device Hub voucher, then competes on this campaign's leaderboard only.",
+      descriptionAr:
+        "حملة فلاجشيب مستقلة. ادفع ٥٠٠ ج.م واستلم قسيمة دلتا بقيمة ٥٠٠ ج.م ثم تنافس على لوحة هذه الحملة فقط.",
       status: "Live",
       marketId: market.id,
       merchantId: merchantB.id,
@@ -185,7 +188,10 @@ async function main() {
       showWinners: true,
       prizeCostWorking: 95000,
       rulesText: "Independent campaign rules identical in structure; separate leaderboard and prize.",
+      rulesTextAr:
+        "قواعد مستقلة بنفس البنية؛ لوحة متصدرين وجائزة منفصلتان. ١٨+ · بحد أقصى ٥ محاولات · بلا سحب عشوائي.",
       voucherTerms: merchantB.terms,
+      voucherTermsAr: merchantB.termsAr,
     },
   });
 
@@ -195,7 +201,9 @@ async function main() {
       name: "Red Sea Escape",
       nameAr: "هروب البحر الأحمر",
       tagline: "Coming soon — register interest.",
+      taglineAr: "قريباً — سجّل اهتمامك.",
       description: "Scheduled travel experience campaign. Notify flow only until Live.",
+      descriptionAr: "حملة تجربة سفر مجدولة. مسار الإشعار فقط حتى تصبح مباشرة.",
       status: "Scheduled",
       marketId: market.id,
       merchantId: merchantC.id,
@@ -215,7 +223,10 @@ async function main() {
       showLeaderboard: false,
       showWinners: false,
       prizeCostWorking: 80000,
+      rulesText: "Notify-only until Live. Same commercial structure when opened.",
+      rulesTextAr: "إشعار فقط حتى تصبح مباشرة. نفس البنية التجارية عند الفتح.",
       voucherTerms: merchantC.terms,
+      voucherTermsAr: merchantC.termsAr,
     },
   });
 
@@ -223,6 +234,7 @@ async function main() {
   const prizePast = await prisma.prize.create({
     data: {
       name: "Smart Watch Elite (Demo)",
+      nameAr: "ساعة ذكية إيليت (تجريبي)",
       imageUrl: "/prizes/watch.svg",
       estimatedValue: 25000,
       secured: true,
@@ -234,6 +246,7 @@ async function main() {
       name: "Smart Watch Spring",
       nameAr: "ساعة ذكية الربيع",
       tagline: "Completed demo campaign",
+      taglineAr: "حملة تجريبية مكتملة",
       status: "Closed",
       marketId: market.id,
       merchantId: merchantA.id,
@@ -356,11 +369,51 @@ async function main() {
 
   // Questions for A & B
   const questionsA = [
-    { promptEn: "What is the capital of Egypt?", promptAr: "ما عاصمة مصر؟", options: ["Cairo", "Alexandria", "Giza", "Luxor"], correct: 0 },
-    { promptEn: "2 + 2 × 3 = ?", promptAr: "٢ + ٢ × ٣ = ؟", options: ["12", "8", "10", "6"], correct: 1 },
-    { promptEn: "Which planet is known as the Red Planet?", promptAr: "أي كوكب يُعرف بالكوكب الأحمر؟", options: ["Venus", "Mars", "Jupiter", "Mercury"], correct: 1 },
-    { promptEn: "HTML stands for?", promptAr: "HTML تعني؟", options: ["Hyper Text Markup Language", "High Tech Modern Language", "Home Tool Markup Language", "Hyperlinks Text Mark Language"], correct: 0 },
-    { promptEn: "How many minutes in 2.5 hours?", promptAr: "كم دقيقة في ٢٫٥ ساعة؟", options: ["120", "150", "180", "90"], correct: 1 },
+    {
+      promptEn: "What is the capital of Egypt?",
+      promptAr: "ما عاصمة مصر؟",
+      options: ["Cairo", "Alexandria", "Giza", "Luxor"],
+      optionsAr: ["القاهرة", "الإسكندرية", "الجيزة", "الأقصر"],
+      correct: 0,
+    },
+    {
+      promptEn: "2 + 2 × 3 = ?",
+      promptAr: "٢ + ٢ × ٣ = ؟",
+      options: ["12", "8", "10", "6"],
+      optionsAr: ["١٢", "٨", "١٠", "٦"],
+      correct: 1,
+    },
+    {
+      promptEn: "Which planet is known as the Red Planet?",
+      promptAr: "أي كوكب يُعرف بالكوكب الأحمر؟",
+      options: ["Venus", "Mars", "Jupiter", "Mercury"],
+      optionsAr: ["الزهرة", "المريخ", "المشتري", "عطارد"],
+      correct: 1,
+    },
+    {
+      promptEn: "HTML stands for?",
+      promptAr: "HTML تعني؟",
+      options: [
+        "HyperText Markup Language",
+        "High Tech Modern Language",
+        "Home Tool Markup Language",
+        "Hyperlinks Text Mark Language",
+      ],
+      optionsAr: [
+        "لغة ترميز النص الفائق",
+        "لغة تقنية حديثة عالية",
+        "لغة ترميز أدوات المنزل",
+        "لغة علامات روابط النص",
+      ],
+      correct: 0,
+    },
+    {
+      promptEn: "How many minutes in 2.5 hours?",
+      promptAr: "كم دقيقة في ٢٫٥ ساعة؟",
+      options: ["120", "150", "180", "90"],
+      optionsAr: ["١٢٠", "١٥٠", "١٨٠", "٩٠"],
+      correct: 1,
+    },
   ];
   for (let i = 0; i < questionsA.length; i++) {
     const q = questionsA[i];
@@ -371,16 +424,47 @@ async function main() {
         promptEn: q.promptEn,
         promptAr: q.promptAr,
         optionsJson: JSON.stringify(q.options),
+        optionsAr: JSON.stringify(q.optionsAr),
         correctIndex: q.correct,
       },
     });
   }
   const questionsB = [
-    { promptEn: "Nile River flows into which sea?", options: ["Red Sea", "Mediterranean", "Black Sea", "Arabian Sea"], correct: 1 },
-    { promptEn: "Binary of decimal 5?", options: ["101", "110", "111", "100"], correct: 0 },
-    { promptEn: "Largest desert in Egypt?", options: ["Eastern", "Western/Libyan", "Sinai", "Qattara"], correct: 1 },
-    { promptEn: "Speed of light ≈?", options: ["300 km/s", "300,000 km/s", "3,000 km/s", "30,000 km/s"], correct: 1 },
-    { promptEn: "Primary colors of light?", options: ["RYB", "RGB", "CMYK", "HSV"], correct: 1 },
+    {
+      promptEn: "Nile River flows into which sea?",
+      promptAr: "تصب مياه النيل في أي بحر؟",
+      options: ["Red Sea", "Mediterranean", "Black Sea", "Arabian Sea"],
+      optionsAr: ["البحر الأحمر", "البحر المتوسط", "البحر الأسود", "بحر العرب"],
+      correct: 1,
+    },
+    {
+      promptEn: "Binary of decimal 5?",
+      promptAr: "ما التمثيل الثنائي للعدد ٥؟",
+      options: ["101", "110", "111", "100"],
+      optionsAr: ["١٠١", "١١٠", "١١١", "١٠٠"],
+      correct: 0,
+    },
+    {
+      promptEn: "Largest desert in Egypt?",
+      promptAr: "أكبر صحراء في مصر؟",
+      options: ["Eastern", "Western/Libyan", "Sinai", "Qattara"],
+      optionsAr: ["الشرقية", "الغربية/الليبية", "سيناء", "القطارة"],
+      correct: 1,
+    },
+    {
+      promptEn: "Speed of light ≈?",
+      promptAr: "سرعة الضوء تقريباً؟",
+      options: ["300 km/s", "300,000 km/s", "3,000 km/s", "30,000 km/s"],
+      optionsAr: ["٣٠٠ كم/ث", "٣٠٠٬٠٠٠ كم/ث", "٣٬٠٠٠ كم/ث", "٣٠٬٠٠٠ كم/ث"],
+      correct: 1,
+    },
+    {
+      promptEn: "Primary colors of light?",
+      promptAr: "الألوان الأساسية للضوء؟",
+      options: ["RYB", "RGB", "CMYK", "HSV"],
+      optionsAr: ["RYB", "RGB", "CMYK", "HSV"],
+      correct: 1,
+    },
   ];
   for (let i = 0; i < questionsB.length; i++) {
     const q = questionsB[i];
@@ -389,7 +473,9 @@ async function main() {
         campaignId: campaignB.id,
         orderIndex: i,
         promptEn: q.promptEn,
+        promptAr: q.promptAr,
         optionsJson: JSON.stringify(q.options),
+        optionsAr: JSON.stringify(q.optionsAr),
         correctIndex: q.correct,
       },
     });

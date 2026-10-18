@@ -29,8 +29,15 @@
 
 ## i18n
 
-- Client `LocaleProvider` with EN/AR dictionary + `dir` switch.
-- Campaign content fields include `*Ar` columns; full copy coverage can expand.
+- Client `LocaleProvider` with EN/AR dictionary + `dir` switch; Cairo webfont for RTL body/display.
+- Campaign / prize / merchant / question content use `*Ar` columns; questions also store `optionsAr` (JSON array, same length as `optionsJson`).
+- Pure helpers in `src/lib/i18n-helpers.ts` (`tr`, `nbaLabel`) for tests and shared mapping.
+
+## Admin campaign builder
+
+- POST/PUT `/api/admin/campaigns` validate via `validateCampaignBuilderInput` (slug, 5Q, max purchases ≤ 5, positive price/voucher, cutoff from deadline).
+- PATCH remains visibility/status-only.
+- Question updates upsert by `(campaignId, orderIndex)` so existing challenge responses keep FKs.
 
 ## Imagery
 

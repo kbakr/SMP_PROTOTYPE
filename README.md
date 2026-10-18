@@ -68,11 +68,17 @@ npm run db:deploy      # postgres: db push + seed (production/shared)
 - `/lp/ig-influencer-a-phone` — Influencer A acquisition LP
 - `/lp/crm-recover-phone` — CRM recovery LP (EGP350)
 - `/admin` — visibility / modules / reset demo
+- `/admin/campaigns/new` — create campaign (prize + 5 questions, EN/AR)
+- `/admin/campaigns/[id]` — edit campaign content
 - `/admin/customers` — Customer360
 - `/admin/crm` — segments & waves
 - `/admin/bi` — economics
 - `/investor` — guided investor mode
 - `/account` — personalized hub
+
+## Bilingual (EN / AR)
+
+Header language toggle sets `dir=rtl` and switches chrome copy plus campaign `*Ar` / question `promptAr` / `optionsAr` on portal surfaces (home, directory, detail, play, checkout flow, account, winners, leaderboard). Admin builder edits both languages.
 
 ## Commercial rules (do not alter)
 

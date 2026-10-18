@@ -3,17 +3,21 @@
 import { useParams, useRouter } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 import { Button, Section } from "@/components/ui";
+import { useLocale, tr } from "@/lib/i18n";
 
 type Question = {
   id: string;
   orderIndex: number;
   promptEn: string;
+  promptAr?: string | null;
   options: string[];
+  optionsAr?: string[] | null;
 };
 
 export default function PlayPage() {
   const params = useParams<{ slug: string }>();
   const router = useRouter();
+  const { locale, t } = useLocale();
   const [questions, setQuestions] = useState<Question[]>([]);
   const [attemptId, setAttemptId] = useState<string | null>(null);
   const [idx, setIdx] = useState(0);
@@ -33,14 +37,14 @@ export default function PlayPage() {
       .then((r) => r.json())
       .then((d) => {
         if (!d.ok || !d.attempt) {
-          setError(d.error || "No unused attempt. Purchase first.");
+          setError(d.error || t("noUnusedAttempt"));
           return;
         }
         setAttemptId(d.attempt.id);
         setQuestions(d.questions);
         setSecondsLeft(d.timerSeconds || 60);
       });
-  }, [params.slug, router]);
+  }, [params.slug, router, t]);
 
   const submit = useCallback(async () => {
     if (!attemptId || submitting) return;
@@ -49,7 +53,6 @@ export default function PlayPage() {
       questionId,
       selectedIndex,
     }));
-    // fill unanswered as -1
     for (const q of questions) {
       if (!(q.id in answers)) payload.push({ questionId: q.id, selectedIndex: -1 });
     }
@@ -73,8 +76,8 @@ export default function PlayPage() {
       void submit();
       return;
     }
-    const t = setTimeout(() => setSecondsLeft((s) => s - 1), 1000);
-    return () => clearTimeout(t);
+    const timer = setTimeout(() => setSecondsLeft((s) => s - 1), 1000);
+    return () => clearTimeout(timer);
   }, [started, secondsLeft, submit]);
 
   async function start() {
@@ -92,20 +95,18 @@ export default function PlayPage() {
   }
 
   const q = questions[idx];
+  const prompt = q ? tr(locale, q.promptEn, q.promptAr) : "";
+  const options =
+    q && locale === "ar" && q.optionsAr?.length === q.options.length ? q.optionsAr : q?.options || [];
 
   return (
-    <Section
-      title="Skill challenge"
-      subtitle="5 questions · one continuous timer · answers final · no live correctness feedback"
-    >
+    <Section title={t("playTitle")} subtitle={t("playSub")}>
       {error ? <p className="mb-4 text-rose-700">{error}</p> : null}
       {!started ? (
         <div className="rounded-3xl bg-white/80 p-6">
-          <p className="text-sm text-slate-600">
-            Timer starts on the server when you begin. Leaving the page does not pause a started attempt.
-          </p>
+          <p className="text-sm text-slate-600">{t("playReady")}</p>
           <Button className="mt-4" onClick={start} disabled={!attemptId}>
-            Start 60-second challenge
+            {t("startChallenge")}
           </Button>
         </div>
       ) : q ? (
@@ -114,17 +115,20 @@ export default function PlayPage() {
             <span className="text-sm font-bold text-amber-300">
               Q{idx + 1}/{questions.length}
             </span>
-            <span className={`font-display text-3xl ${secondsLeft <= 10 ? "text-rose-400" : "text-teal-300"}`}>
+            <span
+              className={`font-display text-3xl ${secondsLeft <= 10 ? "text-rose-400" : "text-teal-300"}`}
+              dir="ltr"
+            >
               {secondsLeft}s
             </span>
           </div>
-          <h2 className="mt-4 font-display text-2xl">{q.promptEn}</h2>
+          <h2 className="mt-4 font-display text-2xl">{prompt}</h2>
           <div className="mt-6 grid gap-2">
-            {q.options.map((opt, i) => (
+            {options.map((opt, i) => (
               <button
                 key={i}
                 type="button"
-                className={`rounded-xl px-4 py-3 text-left text-sm font-semibold ${
+                className={`rounded-xl px-4 py-3 text-start text-sm font-semibold ${
                   answers[q.id] === i ? "bg-rose-500" : "bg-white/10 hover:bg-white/20"
                 }`}
                 onClick={() => {

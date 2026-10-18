@@ -3,9 +3,11 @@
 import { useParams } from "next/navigation";
 import { useState } from "react";
 import { Button, Section } from "@/components/ui";
+import { useLocale } from "@/lib/i18n";
 
 export default function NotifyPage() {
   const params = useParams<{ slug: string }>();
+  const { t } = useLocale();
   const [phone, setPhone] = useState("");
   const [consent, setConsent] = useState(false);
   const [done, setDone] = useState(false);
@@ -22,24 +24,25 @@ export default function NotifyPage() {
   }
 
   return (
-    <Section title="Notify me" subtitle="Upcoming campaign interest — consent required">
+    <Section title={t("notifyTitle")} subtitle={t("notifySub")}>
       {done ? (
-        <p className="rounded-2xl bg-teal-50 p-4 text-teal-900">Interest recorded (demo).</p>
+        <p className="rounded-2xl bg-teal-50 p-4 text-teal-900">✓</p>
       ) : (
         <form onSubmit={submit} className="max-w-md space-y-3 rounded-3xl bg-white/80 p-6">
           <input
             className="w-full rounded-xl border px-3 py-2"
-            placeholder="Mobile"
+            placeholder={t("phone")}
             value={phone}
             onChange={(e) => setPhone(e.target.value)}
+            dir="ltr"
             required
           />
           <label className="flex items-start gap-2 text-sm">
             <input type="checkbox" checked={consent} onChange={(e) => setConsent(e.target.checked)} />
-            I consent to be notified about this campaign (demo).
+            {t("consentNotify")}
           </label>
           <Button type="submit" disabled={!consent}>
-            Save interest
+            {t("submitInterest")}
           </Button>
         </form>
       )}

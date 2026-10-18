@@ -1,6 +1,9 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
 import { formatEGP, egyptDate } from "@/lib/utils";
+import { useLocale, tr } from "@/lib/i18n";
 import { Badge, LinkButton } from "./ui";
 
 export type CampaignCardData = {
@@ -15,21 +18,20 @@ export type CampaignCardData = {
   heroImageUrl?: string | null;
   gameplayDeadline?: Date | string | null;
   prize?: { name: string; nameAr?: string | null; imageUrl?: string | null } | null;
-  merchant?: { name: string } | null;
+  merchant?: { name: string; nameAr?: string | null } | null;
 };
 
 export function CampaignCard({
   campaign,
-  locale = "en",
-  ctaLabel = "Enter now",
+  ctaLabel,
 }: {
   campaign: CampaignCardData;
-  locale?: string;
   ctaLabel?: string;
 }) {
-  const prizeName =
-    locale === "ar" && campaign.prize?.nameAr ? campaign.prize.nameAr : campaign.prize?.name;
-  const name = locale === "ar" && campaign.nameAr ? campaign.nameAr : campaign.name;
+  const { locale, t } = useLocale();
+  const prizeName = tr(locale, campaign.prize?.name || "", campaign.prize?.nameAr);
+  const name = tr(locale, campaign.name, campaign.nameAr);
+  const merchantName = tr(locale, campaign.merchant?.name || "", campaign.merchant?.nameAr);
   const tone =
     campaign.status === "Live" ? "live" : campaign.status === "Scheduled" ? "soon" : "closed";
 
@@ -48,7 +50,7 @@ export function CampaignCard({
           sizes="(max-width:768px) 100vw, 33vw"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-slate-950/70 via-transparent to-transparent" />
-        <div className="absolute left-3 top-3">
+        <div className="absolute start-3 top-3">
           <Badge tone={tone}>{campaign.status}</Badge>
         </div>
       </div>
@@ -56,36 +58,36 @@ export function CampaignCard({
         <div>
           <h3 className="font-display text-xl text-slate-900">{name}</h3>
           <p className="mt-1 text-sm font-medium text-slate-600">
-            Prize: <span className="text-slate-900">{prizeName || "—"}</span>
+            {t("prizeLabel")}: <span className="text-slate-900">{prizeName || "—"}</span>
           </p>
         </div>
         <dl className="grid grid-cols-2 gap-2 text-sm">
           <div className="rounded-xl bg-rose-50 px-3 py-2">
-            <dt className="text-[11px] font-bold uppercase tracking-wide text-rose-700">You pay</dt>
+            <dt className="text-[11px] font-bold uppercase tracking-wide text-rose-700">{t("price")}</dt>
             <dd className="font-semibold text-slate-900">{formatEGP(campaign.standardPrice, locale)}</dd>
           </div>
           <div className="rounded-xl bg-teal-50 px-3 py-2">
-            <dt className="text-[11px] font-bold uppercase tracking-wide text-teal-700">Voucher</dt>
+            <dt className="text-[11px] font-bold uppercase tracking-wide text-teal-700">{t("voucher")}</dt>
             <dd className="font-semibold text-slate-900">
               {formatEGP(campaign.standardVoucherValue, locale)}
-              {campaign.merchant ? (
-                <span className="block text-[11px] font-medium text-teal-800">{campaign.merchant.name}</span>
+              {merchantName ? (
+                <span className="block text-[11px] font-medium text-teal-800">{merchantName}</span>
               ) : null}
             </dd>
           </div>
         </dl>
         <p className="text-xs text-slate-500">
-          Deadline: {egyptDate(campaign.gameplayDeadline, locale)} · Skill-based · Win not guaranteed
+          {t("deadline")}: {egyptDate(campaign.gameplayDeadline, locale)} · {t("skillWinNote")}
         </p>
         <div className="flex flex-wrap gap-2">
           <LinkButton href={`/campaigns/${campaign.slug}`} className="flex-1">
-            {ctaLabel}
+            {ctaLabel || t("enterNow")}
           </LinkButton>
           <Link
             href={`/campaigns/${campaign.slug}/leaderboard`}
             className="rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs font-semibold text-slate-700"
           >
-            Leaderboard
+            {t("leaderboardLink")}
           </Link>
         </div>
       </div>

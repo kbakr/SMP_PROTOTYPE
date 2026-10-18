@@ -13,6 +13,15 @@
   --smp-grad-c: #2ec4b6;
   --font-display: "Fraunces", "Georgia", serif;
   --font-body: "Manrope", "Trebuchet MS", sans-serif;
+  --font-arabic: "Cairo", "Tahoma", sans-serif;
+}
+
+html[dir="rtl"] body {
+  font-family: var(--font-arabic), var(--font-body);
+}
+
+html[dir="rtl"] .font-display {
+  font-family: var(--font-arabic), var(--font-display);
 }
 
 @theme inline {

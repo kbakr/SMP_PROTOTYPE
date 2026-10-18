@@ -28,7 +28,7 @@ export function SiteHeader() {
               {t("brand")}
             </div>
             <div className="text-[10px] font-semibold uppercase tracking-[0.2em] text-slate-500">
-              Egypt · Skill · Value
+              {t("brandTagline")}
             </div>
           </div>
         </Link>

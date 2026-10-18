@@ -291,6 +291,7 @@ model Question {
   promptEn    String
   promptAr    String?
   optionsJson String
+  optionsAr   String?
   correctIndex Int
   responses   ChallengeResponse[]
 

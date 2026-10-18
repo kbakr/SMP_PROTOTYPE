@@ -70,7 +70,10 @@ export default function AdminPage() {
       title="SMP Admin"
       subtitle="Visibility, featured order, homepage modules. Demo auth — not production-secure."
       action={
-        <div className="flex gap-2">
+        <div className="flex flex-wrap gap-2">
+          <Link href="/admin/campaigns/new" className="text-sm font-bold text-rose-700">
+            + Campaign builder
+          </Link>
           <Link href="/admin/customers" className="text-sm font-bold text-rose-700">
             Customer360
           </Link>
@@ -108,7 +111,15 @@ export default function AdminPage() {
         ))}
       </div>
 
-      <h3 className="mt-10 font-display text-xl">Campaigns</h3>
+      <div className="mt-10 flex flex-wrap items-center justify-between gap-3">
+        <h3 className="font-display text-xl">Campaigns</h3>
+        <Link
+          href="/admin/campaigns/new"
+          className="rounded-xl bg-rose-600 px-4 py-2 text-sm font-bold text-white"
+        >
+          Create campaign
+        </Link>
+      </div>
       <div className="mt-4 space-y-4">
         {campaigns.map((c) => (
           <article key={c.id} className="rounded-3xl border border-white/60 bg-white/80 p-5">
@@ -120,12 +131,18 @@ export default function AdminPage() {
                 </p>
                 <Badge tone={c.status === "Live" ? "live" : "soon"}>{c.status}</Badge>
               </div>
-              <div className="flex items-center gap-2">
+              <div className="flex flex-wrap items-center gap-2">
+                <Link
+                  href={`/admin/campaigns/${c.id}`}
+                  className="rounded-xl border border-slate-200 bg-white px-3 py-1.5 text-xs font-bold text-rose-700"
+                >
+                  Edit content
+                </Link>
                 <label className="text-xs font-semibold">
                   Sort
                   <input
                     type="number"
-                    className="ml-2 w-20 rounded border px-2 py-1"
+                    className="ms-2 w-20 rounded border px-2 py-1"
                     value={c.homeSortOrder}
                     onChange={(e) => patchCampaign(c.id, { homeSortOrder: Number(e.target.value) })}
                   />

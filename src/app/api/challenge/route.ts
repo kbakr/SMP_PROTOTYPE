@@ -31,6 +31,7 @@ export async function GET(req: Request) {
     promptEn: q.promptEn,
     promptAr: q.promptAr,
     options: JSON.parse(q.optionsJson) as string[],
+    optionsAr: q.optionsAr ? (JSON.parse(q.optionsAr) as string[]) : null,
     // never send correctIndex to client
   }));
 

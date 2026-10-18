@@ -1,9 +1,9 @@
 # SMP Implementation Status
 
 **Updated:** 2026-10-18  
-**App root:** `/agent` (also published on GitHub)  
+**App root:** repository root (also published on GitHub)  
 **Stack:** Next.js 15 · TypeScript · Tailwind v4 · Prisma · SQLite (local) / **PostgreSQL (production via Neon on Vercel)**  
-**Status:** Local demo verified · Published to GitHub · **Live on Vercel production**
+**Status:** Local demo verified · Published to GitHub · **Live on Vercel production** · AR depth + admin campaign builder landed
 
 ## Hosting / Vercel
 
@@ -13,12 +13,13 @@
 - **Git:** connected to https://github.com/kbakr/SMP_PROTOTYPE (`main`)  
 - **Database:** Neon Postgres (Vercel Marketplace `free_v3`), schema pushed + demo seeded (`db:deploy`)  
 - **Verified 200:** `/`, `/campaigns`, `/winners`, `/investor`, `/admin`, `/lp/ig-influencer-a-phone`  
-- **Repo config on `main`:** `vercel.json` (`prisma generate && next build`), Prisma `provider = "postgresql"`, `.npmrc`, `npm run db:deploy`
+- **Repo config on `main`:** `vercel.json` (`prisma generate && next build`), Prisma `provider = "postgresql"`, `.npmrc`, `npm run db:deploy`  
+- **After this polish:** redeploy picks up AR + builder UI; run `npm run db:deploy` (or `prisma db push`) once so Neon gets `Question.optionsAr`
 
 ## GitHub remote
 
 - **Live repo:** https://github.com/kbakr/SMP_PROTOTYPE  
-- **Branch:** `main`  
+- **Branch:** `main` (feature work may land via PR then merge)  
 - **Confirmed on GitHub:** `package.json`, `README.md`, `IMPLEMENTATION_STATUS.md`, plus `src/`, `prisma/`, `tests/`  
 
 ## How to run
@@ -47,14 +48,16 @@ Demo OTP: `123456` · See README for persona phones.
 | 4 | Admin, Customer360, CRM segments/waves, attribution | Done (working prototype depth) |
 | 5 | BI economics + charts from financial records | Done |
 | 6 | Investor Mode + white-label theme toggle | Done |
-| 7 | Tests, RTL toggle, empty states, docs | Done (core); polish remains |
+| 7 | Tests, RTL toggle, empty states, docs | Done (core) |
+| 7b | Deeper AR + admin campaign builder | **Done (this pass)** |
 
 ## Verified
 
-- `npm run test` — **13/13 passed** (local)
-- `npm run build` — success (local + Vercel production)
-- Vercel production smoke: homepage and key routes **200**; demo OTP API accepts phone+code
-- Seed on Neon: Campaigns A/B Live, C Scheduled, past Closed; Ahmed golden path; demo personas
+- `npm run test` — **19/19 passed** (local; +6 campaign-builder / i18n helper tests)
+- `npm run build` — success (local)
+- Local smoke: `/`, `/campaigns`, `/admin`, `/admin/campaigns/new` **200**; builder POST/PUT create+edit with 5Q + `*Ar`
+- Vercel production smoke (pre-polish): homepage and key routes **200**; demo OTP API accepts phone+code
+- Seed: Campaigns A/B Live, C Scheduled, past Closed; bilingual prompts/options; Ahmed golden path
 - No real payment/OTP/SMS providers
 - GitHub publish — **pass**
 
@@ -65,20 +68,22 @@ Demo OTP: `123456` · See README for persona phones.
 - Acquisition LPs distinct from homepage; attribution touch recorded
 - End-to-end simulated purchase with **voucher before attempt**
 - Challenge: 5Q / 60s, server timestamps, recomputed ranks, campaign isolation
-- Account NBA (play unused attempt first)
+- Account NBA (play unused attempt first) with EN/AR labels
 - Admin visibility controls reflected on portal listings
+- **Admin campaign builder** (`/admin/campaigns/new`, `/admin/campaigns/[id]`): create/edit campaign copy EN/AR, prize, commercial defaults (500/500, max 5, 5Q/60s), questions + options EN/AR; POST/PUT `/api/admin/campaigns`; visibility PATCH unchanged
 - Customer360 + CRM wave attribution display + BI contribution (promo ≠ standard unit math)
 - Investor guided tour
-- EN/AR language toggle (dir=rtl)
+- **EN/AR language toggle** with expanded dictionary on home, directory, detail, play (prompt+options), checkout flow, account, winners, leaderboard, footer; RTL + Cairo font; campaign `*Ar` / `optionsAr` used when locale is AR
 
 ## What’s left / limitations
 
-- Full Arabic copy not on every string (framework + campaign `*Ar` fields present)
-- Admin campaign *builder* (create prizes/questions from UI) is thin — seed/API oriented; visibility/CRM/BI covered
+- Landing pages (`/lp/*`) and investor tour copy still thinner in AR than portal core
+- Offer names remain English codes/labels (no `Offer.*Ar` fields)
 - Segment builder is display + seeded rules JSON, not a full visual AND/OR editor
 - Challenge UX is sequential but not deeply animated; no platform-fault free-retry UI beyond data model
 - Local SQLite still available by flipping Prisma `provider` (see README / DECISIONS.md)
-- Accessibility/RTL polish can go deeper; automated e2e browser tests not included (unit tests cover rules)
+- Automated e2e browser tests not included (unit tests cover rules + builder validation)
+- Production Neon needs a one-time schema push for `optionsAr` after deploy
 
 ## Acceptance criteria map
 
@@ -93,9 +98,10 @@ Demo OTP: `123456` · See README for persona phones.
 9. CRM + consent surfaces — **pass** (simulated)  
 10. Economics from records — **pass** (tested)  
 11. Investor labeled + theme — **pass**  
-12. AR/EN + responsive — **partial** (toggle + responsive layouts; deeper AR QA open)  
+12. AR/EN + responsive — **pass** (portal core + RTL; LP/investor still thinner)  
 13. Demo labeling / no real charges — **pass**  
-14. Automated tests — **pass** (13)
+14. Automated tests — **pass** (19)  
+15. Admin campaign builder UI — **pass** (create/edit prizes + questions)
 
 ## Media
 
