@@ -53,7 +53,7 @@ Demo OTP: `123456` · See README for persona phones.
 
 ## Verified
 
-- `npm run test` — **19/19 passed** (local; +6 campaign-builder / i18n helper tests)
+- `npm run test` — **20/20 passed** (local; builder + i18n + options JSON helpers)
 - `npm run build` — success (local)
 - Local smoke: `/`, `/campaigns`, `/admin`, `/admin/campaigns/new` **200**; builder POST/PUT create+edit with 5Q + `*Ar`
 - Vercel production smoke (pre-polish): homepage and key routes **200**; demo OTP API accepts phone+code
@@ -100,7 +100,7 @@ Demo OTP: `123456` · See README for persona phones.
 11. Investor labeled + theme — **pass**  
 12. AR/EN + responsive — **pass** (portal core + RTL; LP/investor still thinner)  
 13. Demo labeling / no real charges — **pass**  
-14. Automated tests — **pass** (19)  
+14. Automated tests — **pass** (20)  
 15. Admin campaign builder UI — **pass** (create/edit prizes + questions)
 
 ## Media
