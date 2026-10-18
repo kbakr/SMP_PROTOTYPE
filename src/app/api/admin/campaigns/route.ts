@@ -122,7 +122,6 @@ export async function POST(req: Request) {
           promptEn: q.promptEn,
           promptAr: q.promptAr,
           optionsJson: q.optionsJson,
-          optionsAr: q.optionsAr,
           correctIndex: q.correctIndex,
         },
       });
@@ -227,14 +226,12 @@ export async function PUT(req: Request) {
           promptEn: q.promptEn,
           promptAr: q.promptAr,
           optionsJson: q.optionsJson,
-          optionsAr: q.optionsAr,
           correctIndex: q.correctIndex,
         },
         update: {
           promptEn: q.promptEn,
           promptAr: q.promptAr,
           optionsJson: q.optionsJson,
-          optionsAr: q.optionsAr,
           correctIndex: q.correctIndex,
         },
       });

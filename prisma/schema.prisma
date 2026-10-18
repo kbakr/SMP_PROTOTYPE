@@ -290,8 +290,8 @@ model Question {
   orderIndex  Int
   promptEn    String
   promptAr    String?
+  // JSON: string[] (EN-only) or { en: string[], ar?: string[] }
   optionsJson String
-  optionsAr   String?
   correctIndex Int
   responses   ChallengeResponse[]
 

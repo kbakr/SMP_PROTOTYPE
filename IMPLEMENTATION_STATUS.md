@@ -14,7 +14,7 @@
 - **Database:** Neon Postgres (Vercel Marketplace `free_v3`), schema pushed + demo seeded (`db:deploy`)  
 - **Verified 200:** `/`, `/campaigns`, `/winners`, `/investor`, `/admin`, `/lp/ig-influencer-a-phone`  
 - **Repo config on `main`:** `vercel.json` (`prisma generate && next build`), Prisma `provider = "postgresql"`, `.npmrc`, `npm run db:deploy`  
-- **After this polish:** redeploy picks up AR + builder UI; run `npm run db:deploy` (or `prisma db push`) once so Neon gets `Question.optionsAr`
+- **After this polish:** redeploy picks up AR + builder UI; bilingual question options live in `optionsJson` (`{en,ar}`) — **no Neon column migrate required**
 
 ## GitHub remote
 
@@ -73,7 +73,7 @@ Demo OTP: `123456` · See README for persona phones.
 - **Admin campaign builder** (`/admin/campaigns/new`, `/admin/campaigns/[id]`): create/edit campaign copy EN/AR, prize, commercial defaults (500/500, max 5, 5Q/60s), questions + options EN/AR; POST/PUT `/api/admin/campaigns`; visibility PATCH unchanged
 - Customer360 + CRM wave attribution display + BI contribution (promo ≠ standard unit math)
 - Investor guided tour
-- **EN/AR language toggle** with expanded dictionary on home, directory, detail, play (prompt+options), checkout flow, account, winners, leaderboard, footer; RTL + Cairo font; campaign `*Ar` / `optionsAr` used when locale is AR
+- **EN/AR language toggle** with expanded dictionary on home, directory, detail, play (prompt + bilingual options), checkout flow, account, winners, leaderboard, footer; RTL + Cairo font; campaign `*Ar` + `optionsJson.{ar}` used when locale is AR
 
 ## What’s left / limitations
 
@@ -83,7 +83,7 @@ Demo OTP: `123456` · See README for persona phones.
 - Challenge UX is sequential but not deeply animated; no platform-fault free-retry UI beyond data model
 - Local SQLite still available by flipping Prisma `provider` (see README / DECISIONS.md)
 - Automated e2e browser tests not included (unit tests cover rules + builder validation)
-- Production Neon needs a one-time schema push for `optionsAr` after deploy
+- Optional: reseed demo to refresh bilingual `{en,ar}` options on A/B questions (legacy EN-only arrays still work)
 
 ## Acceptance criteria map
 

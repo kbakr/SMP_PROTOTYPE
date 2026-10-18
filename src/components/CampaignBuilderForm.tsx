@@ -9,6 +9,7 @@ import {
   type BuilderCampaignInput,
   type BuilderQuestionInput,
 } from "@/lib/campaign-builder";
+import { parseQuestionOptions } from "@/lib/question-options";
 
 type Merchant = { id: string; name: string; nameAr?: string | null };
 
@@ -49,7 +50,6 @@ type InitialCampaign = {
     promptEn: string;
     promptAr?: string | null;
     optionsJson: string;
-    optionsAr?: string | null;
     correctIndex: number;
   }>;
 };
@@ -57,8 +57,9 @@ type InitialCampaign = {
 function parseQs(c?: InitialCampaign): BuilderQuestionInput[] {
   if (!c?.questions?.length) return emptyQuestionDraft(RULES.challengeQuestions);
   return c.questions.map((q) => {
-    const options = JSON.parse(q.optionsJson) as string[];
-    const optionsAr = q.optionsAr ? (JSON.parse(q.optionsAr) as string[]) : options.map(() => "");
+    const parsed = parseQuestionOptions(q.optionsJson);
+    const options = parsed.options;
+    const optionsAr = parsed.optionsAr || options.map(() => "");
     return {
       promptEn: q.promptEn,
       promptAr: q.promptAr || "",

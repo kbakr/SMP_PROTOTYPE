@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { startChallenge, submitChallenge } from "@/lib/checkout";
 import { prisma } from "@/lib/db";
+import { parseQuestionOptions } from "@/lib/question-options";
 
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
@@ -25,15 +26,18 @@ export async function GET(req: Request) {
     include: { voucher: true },
   });
 
-  const questions = campaign.questions.map((q) => ({
-    id: q.id,
-    orderIndex: q.orderIndex,
-    promptEn: q.promptEn,
-    promptAr: q.promptAr,
-    options: JSON.parse(q.optionsJson) as string[],
-    optionsAr: q.optionsAr ? (JSON.parse(q.optionsAr) as string[]) : null,
-    // never send correctIndex to client
-  }));
+  const questions = campaign.questions.map((q) => {
+    const parsed = parseQuestionOptions(q.optionsJson);
+    return {
+      id: q.id,
+      orderIndex: q.orderIndex,
+      promptEn: q.promptEn,
+      promptAr: q.promptAr,
+      options: parsed.options,
+      optionsAr: parsed.optionsAr,
+      // never send correctIndex to client
+    };
+  });
 
   return NextResponse.json({
     ok: true,

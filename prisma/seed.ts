@@ -423,8 +423,7 @@ async function main() {
         orderIndex: i,
         promptEn: q.promptEn,
         promptAr: q.promptAr,
-        optionsJson: JSON.stringify(q.options),
-        optionsAr: JSON.stringify(q.optionsAr),
+        optionsJson: JSON.stringify({ en: q.options, ar: q.optionsAr }),
         correctIndex: q.correct,
       },
     });
@@ -474,8 +473,7 @@ async function main() {
         orderIndex: i,
         promptEn: q.promptEn,
         promptAr: q.promptAr,
-        optionsJson: JSON.stringify(q.options),
-        optionsAr: JSON.stringify(q.optionsAr),
+        optionsJson: JSON.stringify({ en: q.options, ar: q.optionsAr }),
         correctIndex: q.correct,
       },
     });

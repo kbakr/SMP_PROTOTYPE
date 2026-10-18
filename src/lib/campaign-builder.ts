@@ -1,4 +1,5 @@
 import { RULES } from "./business-rules";
+import { serializeQuestionOptions } from "./question-options";
 
 export type BuilderQuestionInput = {
   promptEn: string;
@@ -88,7 +89,6 @@ export type NormalizedBuilderCampaign = {
     promptEn: string;
     promptAr: string | null;
     optionsJson: string;
-    optionsAr: string | null;
     correctIndex: number;
   }>;
   createStandardOffer: boolean;
@@ -140,7 +140,7 @@ export function validateCampaignBuilderInput(raw: BuilderCampaignInput): Builder
     if (correctIndex < 0 || correctIndex >= options.length) {
       return { ok: false, error: `Question ${i + 1}: correctIndex out of range` };
     }
-    let optionsAr: string | null = null;
+    let optionsAr: string[] | null = null;
     if (Array.isArray(q.optionsAr) && q.optionsAr.length) {
       const ar = q.optionsAr.map((o) => String(o).trim());
       if (ar.length !== options.length || ar.some((o) => !o)) {
@@ -149,14 +149,13 @@ export function validateCampaignBuilderInput(raw: BuilderCampaignInput): Builder
           error: `Question ${i + 1}: optionsAr must match options length with non-empty values`,
         };
       }
-      optionsAr = JSON.stringify(ar);
+      optionsAr = ar;
     }
     normalizedQs.push({
       orderIndex: i,
       promptEn,
       promptAr: q.promptAr ? String(q.promptAr).trim() : null,
-      optionsJson: JSON.stringify(options),
-      optionsAr,
+      optionsJson: serializeQuestionOptions(options, optionsAr),
       correctIndex,
     });
   }

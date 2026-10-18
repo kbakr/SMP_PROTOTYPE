@@ -78,7 +78,7 @@ npm run db:deploy      # postgres: db push + seed (production/shared)
 
 ## Bilingual (EN / AR)
 
-Header language toggle sets `dir=rtl` and switches chrome copy plus campaign `*Ar` / question `promptAr` / `optionsAr` on portal surfaces (home, directory, detail, play, checkout flow, account, winners, leaderboard). Admin builder edits both languages.
+Header language toggle sets `dir=rtl` and switches chrome copy plus campaign `*Ar` / question `promptAr` / bilingual `optionsJson` on portal surfaces (home, directory, detail, play, checkout flow, account, winners, leaderboard). Admin builder edits both languages.
 
 ## Commercial rules (do not alter)
 

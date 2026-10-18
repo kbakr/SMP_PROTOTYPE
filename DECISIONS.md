@@ -30,7 +30,7 @@
 ## i18n
 
 - Client `LocaleProvider` with EN/AR dictionary + `dir` switch; Cairo webfont for RTL body/display.
-- Campaign / prize / merchant / question content use `*Ar` columns; questions also store `optionsAr` (JSON array, same length as `optionsJson`).
+- Campaign / prize / merchant / question content use `*Ar` columns; question options use bilingual `optionsJson` (`string[]` legacy or `{ en, ar }`) via `src/lib/question-options.ts` — no extra DB column (avoids prod migrate blockers).
 - Pure helpers in `src/lib/i18n-helpers.ts` (`tr`, `nbaLabel`) for tests and shared mapping.
 
 ## Admin campaign builder

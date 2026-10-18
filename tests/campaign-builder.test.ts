@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import { RULES } from "../src/lib/business-rules";
 import { validateCampaignBuilderInput } from "../src/lib/campaign-builder";
 import { nbaLabel, tr } from "../src/lib/i18n-helpers";
+import { parseQuestionOptions, serializeQuestionOptions } from "../src/lib/question-options";
 
 function sampleQuestions(n = RULES.challengeQuestions) {
   return Array.from({ length: n }, (_, i) => ({
@@ -32,7 +33,12 @@ describe("campaign builder validation", () => {
       expect(result.data.questions).toHaveLength(5);
       expect(result.data.standardPrice).toBe(500);
       expect(result.data.purchaseCutoff).toBeNull();
-      expect(JSON.parse(result.data.questions[0].optionsAr!)).toEqual(["أ", "ب", "ج", "د"]);
+      expect(parseQuestionOptions(result.data.questions[0].optionsJson).optionsAr).toEqual([
+        "أ",
+        "ب",
+        "ج",
+        "د",
+      ]);
     }
   });
 
@@ -95,5 +101,16 @@ describe("i18n helpers", () => {
   it("maps NBA actions to Arabic labels", () => {
     expect(nbaLabel("ar", "play")).toContain("محاولتك");
     expect(nbaLabel("en", "purchase")).toBe("Enter campaign");
+  });
+});
+
+describe("question options JSON", () => {
+  it("round-trips bilingual options and accepts legacy arrays", () => {
+    const json = serializeQuestionOptions(["A", "B"], ["أ", "ب"]);
+    expect(parseQuestionOptions(json)).toEqual({ options: ["A", "B"], optionsAr: ["أ", "ب"] });
+    expect(parseQuestionOptions(JSON.stringify(["A", "B"]))).toEqual({
+      options: ["A", "B"],
+      optionsAr: null,
+    });
   });
 });
