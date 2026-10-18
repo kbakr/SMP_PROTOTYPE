@@ -3,7 +3,16 @@
 **Updated:** 2026-10-18  
 **App root:** `/agent`  
 **Stack:** Next.js 15 · TypeScript · Tailwind v4 · Prisma · SQLite  
-**Status:** Ready for publication (local demo verified)
+**Status:** Local demo verified · GitHub remote configured · **push blocked on auth**
+
+## GitHub remote
+
+- **Repo:** https://github.com/kbakr/SMP_PROTOTYPE  
+- **Local `origin`:** `https://github.com/kbakr/SMP_PROTOTYPE.git`  
+- **Branch to publish:** `main` (2 commits; SQLite `*.db` and `.env` not tracked; `.env.example` kept)  
+- **Push attempt:** failed — `fatal: could not read Username for 'https://github.com': No such device or address`  
+- **Also tried:** `gh` not logged in; SSH `Permission denied (publickey)`; no `GITHUB_TOKEN` / `GH_TOKEN` in environment  
+- **Unblock:** grant credentials on this VM (see below), then `cd /agent && git push -u origin main`
 
 ## How to run
 
@@ -88,6 +97,8 @@ Screenshots under project store:
 
 ## Next for publication
 
-1. Create GitHub/Origin remote  
-2. `git init` (if needed) · commit · push  
-3. Optional: switch `DATABASE_URL` to PostgreSQL for shared hosting  
+1. **Auth on this VM** (pick one), then `git push -u origin main`:
+   - Fine-grained or classic **PAT** with `repo` (and `read:org` if org-scoped): `gh auth login --with-token` or `GH_TOKEN=… git push -u origin main`
+   - Or **SSH deploy key / user key** with write access to `kbakr/SMP_PROTOTYPE`, then `git remote set-url origin git@github.com:kbakr/SMP_PROTOTYPE.git`
+   - Or Cursor/GitHub App credentials wired into the cloud agent environment
+2. Optional: switch `DATABASE_URL` to PostgreSQL for shared hosting  
