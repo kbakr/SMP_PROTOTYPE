@@ -1,0 +1,482 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Market {
+  id           String     @id @default(cuid())
+  code         String     @unique
+  name         String
+  currency     String     @default("EGP")
+  timezone     String     @default("Africa/Cairo")
+  vatRate      Float      @default(0.14)
+  campaigns    Campaign[]
+  createdAt    DateTime   @default(now())
+}
+
+model Merchant {
+  id          String     @id @default(cuid())
+  name        String
+  nameAr      String?
+  description String?
+  descriptionAr String?
+  logoUrl     String?
+  terms       String?
+  termsAr     String?
+  vouchers    Voucher[]
+  campaigns   Campaign[]
+  createdAt   DateTime   @default(now())
+}
+
+model Partner {
+  id           String             @id @default(cuid())
+  name         String
+  type         String             @default("influencer")
+  commissionPct Float             @default(0)
+  landingPages LandingPage[]
+  attributions AttributionTouch[]
+  createdAt    DateTime           @default(now())
+}
+
+model Campaign {
+  id                    String   @id @default(cuid())
+  slug                  String   @unique
+  name                  String
+  nameAr                String?
+  tagline               String?
+  taglineAr             String?
+  description           String?
+  descriptionAr         String?
+  status                String   @default("Draft")
+  marketId              String
+  market                Market   @relation(fields: [marketId], references: [id])
+  merchantId            String?
+  merchant              Merchant? @relation(fields: [merchantId], references: [id])
+  prizeId               String?  @unique
+  prize                 Prize?   @relation(fields: [prizeId], references: [id])
+  standardPrice         Float    @default(500)
+  standardVoucherValue  Float    @default(500)
+  maxPurchasesPerUser   Int      @default(5)
+  questionCount         Int      @default(5)
+  timerSeconds          Int      @default(60)
+  gameplayDeadline      DateTime?
+  purchaseCutoff        DateTime?
+  heroImageUrl          String?
+  cardImageUrl          String?
+  brandColor            String?  @default("#E11D48")
+  showOnHome            Boolean  @default(true)
+  showInDirectory       Boolean  @default(true)
+  featured              Boolean  @default(false)
+  homeSortOrder         Int      @default(100)
+  displayStart          DateTime?
+  displayEnd            DateTime?
+  showLeaderboard       Boolean  @default(true)
+  showWinners           Boolean  @default(true)
+  showInUpcoming        Boolean  @default(true)
+  showInPast            Boolean  @default(false)
+  rulesText             String?
+  rulesTextAr           String?
+  voucherTerms          String?
+  voucherTermsAr        String?
+  prizeCostWorking      Float    @default(0)
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
+
+  landingPages          LandingPage[]
+  offers                Offer[]
+  questions             Question[]
+  transactions          Transaction[]
+  vouchers              Voucher[]
+  attempts              Attempt[]
+  winners               Winner[]
+  customerCampaigns     CustomerCampaign[]
+  attributions          AttributionTouch[]
+  leaderboardResults    LeaderboardResult[]
+  interests             CampaignInterest[]
+  crmCampaigns          CRMCampaign[]
+  financialEvents       FinancialEvent[]
+}
+
+model Prize {
+  id            String    @id @default(cuid())
+  name          String
+  nameAr        String?
+  description   String?
+  descriptionAr String?
+  imageUrl      String?
+  estimatedValue Float?
+  secured       Boolean   @default(true)
+  campaign      Campaign?
+}
+
+model LandingPage {
+  id            String   @id @default(cuid())
+  slug          String   @unique
+  campaignId    String
+  campaign      Campaign @relation(fields: [campaignId], references: [id])
+  partnerId     String?
+  partner       Partner? @relation(fields: [partnerId], references: [id])
+  name          String
+  headline      String?
+  headlineAr    String?
+  subheadline   String?
+  subheadlineAr String?
+  creativeUrl   String?
+  language      String   @default("en")
+  active        Boolean  @default(true)
+  offerId       String?
+  offer         Offer?   @relation(fields: [offerId], references: [id])
+  utmSource     String?
+  utmMedium     String?
+  utmCampaign   String?
+  createdAt     DateTime @default(now())
+  attributions  AttributionTouch[]
+}
+
+model Offer {
+  id              String   @id @default(cuid())
+  campaignId      String
+  campaign        Campaign @relation(fields: [campaignId], references: [id])
+  code            String
+  name            String
+  purchasePrice   Float
+  voucherValue    Float
+  offerType       String   @default("standard")
+  priority        Int      @default(100)
+  eligibleSegment String?
+  maxUsesPerUser  Int?
+  active          Boolean  @default(true)
+  attributionOnly Boolean  @default(false)
+  landingPages    LandingPage[]
+  transactions    Transaction[]
+  createdAt       DateTime @default(now())
+
+  @@unique([campaignId, code])
+}
+
+model Customer {
+  id              String   @id @default(cuid())
+  phone           String   @unique
+  email           String?
+  firstName       String
+  lastName        String
+  displayName     String?
+  locale          String   @default("en")
+  dateOfBirth     DateTime?
+  ageVerified     Boolean  @default(true)
+  otpVerified     Boolean  @default(false)
+  marketingConsent Boolean @default(false)
+  publicityConsent Boolean @default(false)
+  isDemo          Boolean  @default(true)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  campaigns       CustomerCampaign[]
+  events          CustomerEvent[]
+  attributions    AttributionTouch[]
+  transactions    Transaction[]
+  vouchers        Voucher[]
+  attempts        Attempt[]
+  leaderboardResults LeaderboardResult[]
+  interests       CampaignInterest[]
+  crmInteractions CRMInteraction[]
+  segmentMembers  SegmentMember[]
+}
+
+model CustomerCampaign {
+  id            String   @id @default(cuid())
+  customerId    String
+  customer      Customer @relation(fields: [customerId], references: [id])
+  campaignId    String
+  campaign      Campaign @relation(fields: [campaignId], references: [id])
+  purchaseCount Int      @default(0)
+  attemptCount  Int      @default(0)
+  unusedAttempts Int     @default(0)
+  bestScore     Int?
+  bestTimeMs    Int?
+  bestRank      Int?
+  lifecycle     String   @default("new")
+  firstPayer    Boolean  @default(false)
+  ltv           Float    @default(0)
+  contribution  Float    @default(0)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@unique([customerId, campaignId])
+}
+
+model CustomerEvent {
+  id          String   @id @default(cuid())
+  customerId  String?
+  customer    Customer? @relation(fields: [customerId], references: [id])
+  campaignId  String?
+  type        String
+  payload     String?
+  createdAt   DateTime @default(now())
+}
+
+model AttributionTouch {
+  id            String   @id @default(cuid())
+  customerId    String?
+  customer      Customer? @relation(fields: [customerId], references: [id])
+  campaignId    String
+  campaign      Campaign @relation(fields: [campaignId], references: [id])
+  landingPageId String?
+  landingPage   LandingPage? @relation(fields: [landingPageId], references: [id])
+  partnerId     String?
+  partner       Partner? @relation(fields: [partnerId], references: [id])
+  source        String?
+  medium        String?
+  content       String?
+  promoCode     String?
+  isOverride    Boolean  @default(false)
+  touchedAt     DateTime @default(now())
+  expiresAt     DateTime?
+}
+
+model Transaction {
+  id              String   @id @default(cuid())
+  customerId      String
+  customer        Customer @relation(fields: [customerId], references: [id])
+  campaignId      String
+  campaign        Campaign @relation(fields: [campaignId], references: [id])
+  offerId         String?
+  offer           Offer?   @relation(fields: [offerId], references: [id])
+  amount          Float
+  voucherValue    Float
+  status          String   @default("pending")
+  paymentRef      String?
+  idempotencyKey  String   @unique
+  attributionJson String?
+  isFirstPayer    Boolean  @default(false)
+  refunded        Boolean  @default(false)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  voucher         Voucher?
+  financialEvents FinancialEvent[]
+}
+
+model Voucher {
+  id            String   @id @default(cuid())
+  code          String   @unique
+  customerId    String
+  customer      Customer @relation(fields: [customerId], references: [id])
+  campaignId    String
+  campaign      Campaign @relation(fields: [campaignId], references: [id])
+  merchantId    String?
+  merchant      Merchant? @relation(fields: [merchantId], references: [id])
+  transactionId String   @unique
+  transaction   Transaction @relation(fields: [transactionId], references: [id])
+  faceValue     Float
+  costValue     Float    @default(50)
+  status        String   @default("issued")
+  terms         String?
+  issuedAt      DateTime @default(now())
+  expiresAt     DateTime?
+  attempt       Attempt?
+}
+
+model Question {
+  id          String   @id @default(cuid())
+  campaignId  String
+  campaign    Campaign @relation(fields: [campaignId], references: [id])
+  orderIndex  Int
+  promptEn    String
+  promptAr    String?
+  optionsJson String
+  correctIndex Int
+  responses   ChallengeResponse[]
+
+  @@unique([campaignId, orderIndex])
+}
+
+model Attempt {
+  id              String   @id @default(cuid())
+  customerId      String
+  customer        Customer @relation(fields: [customerId], references: [id])
+  campaignId      String
+  campaign        Campaign @relation(fields: [campaignId], references: [id])
+  voucherId       String   @unique
+  voucher         Voucher  @relation(fields: [voucherId], references: [id])
+  status          String   @default("entitled")
+  startedAt       DateTime?
+  finishedAt      DateTime?
+  serverStartAt   DateTime?
+  serverEndAt     DateTime?
+  score           Int?
+  timeMs          Int?
+  valid           Boolean  @default(true)
+  invalidReason   String?
+  platformFault   Boolean  @default(false)
+  createdAt       DateTime @default(now())
+  responses       ChallengeResponse[]
+  leaderboardResult LeaderboardResult?
+}
+
+model ChallengeResponse {
+  id           String   @id @default(cuid())
+  attemptId    String
+  attempt      Attempt  @relation(fields: [attemptId], references: [id])
+  questionId   String
+  question     Question @relation(fields: [questionId], references: [id])
+  selectedIndex Int
+  answeredAt   DateTime @default(now())
+
+  @@unique([attemptId, questionId])
+}
+
+model LeaderboardResult {
+  id              String   @id @default(cuid())
+  campaignId      String
+  campaign        Campaign @relation(fields: [campaignId], references: [id])
+  customerId      String
+  customer        Customer @relation(fields: [customerId], references: [id])
+  attemptId       String   @unique
+  attempt         Attempt  @relation(fields: [attemptId], references: [id])
+  score           Int
+  timeMs          Int
+  rank            Int?
+  displayName     String
+  provisional     Boolean  @default(true)
+  qualifyingAt    DateTime
+  updatedAt       DateTime @updatedAt
+
+  @@unique([campaignId, customerId])
+  @@index([campaignId, score, timeMs, qualifyingAt])
+}
+
+model Winner {
+  id               String   @id @default(cuid())
+  campaignId       String
+  campaign         Campaign @relation(fields: [campaignId], references: [id])
+  customerId       String?
+  maskedName       String
+  prizeName        String
+  verified         Boolean  @default(false)
+  publicityConsent Boolean  @default(false)
+  publishedAt      DateTime?
+  isDemo           Boolean  @default(true)
+  createdAt        DateTime @default(now())
+}
+
+model CampaignInterest {
+  id         String   @id @default(cuid())
+  campaignId String
+  campaign   Campaign @relation(fields: [campaignId], references: [id])
+  customerId String?
+  customer   Customer? @relation(fields: [customerId], references: [id])
+  phone      String?
+  email      String?
+  consent    Boolean  @default(false)
+  createdAt  DateTime @default(now())
+}
+
+model Segment {
+  id          String   @id @default(cuid())
+  name        String
+  description String?
+  rulesJson   String
+  createdAt   DateTime @default(now())
+  members     SegmentMember[]
+  crmCampaigns CRMCampaign[]
+}
+
+model SegmentMember {
+  id         String   @id @default(cuid())
+  segmentId  String
+  segment    Segment  @relation(fields: [segmentId], references: [id])
+  customerId String
+  customer   Customer @relation(fields: [customerId], references: [id])
+
+  @@unique([segmentId, customerId])
+}
+
+model CRMCampaign {
+  id          String   @id @default(cuid())
+  name        String
+  objective   String
+  campaignId  String?
+  campaign    Campaign? @relation(fields: [campaignId], references: [id])
+  segmentId   String?
+  segment     Segment?  @relation(fields: [segmentId], references: [id])
+  channel     String
+  messageTemplate String?
+  offerCode   String?
+  lpSlug      String?
+  status      String   @default("draft")
+  createdAt   DateTime @default(now())
+  waves       CRMWave[]
+}
+
+model CRMWave {
+  id            String   @id @default(cuid())
+  crmCampaignId String
+  crmCampaign   CRMCampaign @relation(fields: [crmCampaignId], references: [id])
+  name          String
+  scheduledAt   DateTime?
+  sentAt        DateTime?
+  controlPct    Float    @default(0.1)
+  status        String   @default("draft")
+  interactions  CRMInteraction[]
+}
+
+model CRMInteraction {
+  id          String   @id @default(cuid())
+  waveId      String
+  wave        CRMWave  @relation(fields: [waveId], references: [id])
+  customerId  String
+  customer    Customer @relation(fields: [customerId], references: [id])
+  channel     String
+  isControl   Boolean  @default(false)
+  status      String   @default("queued")
+  responded   Boolean  @default(false)
+  revenueAttr Float    @default(0)
+  sentAt      DateTime?
+  createdAt   DateTime @default(now())
+}
+
+model FinancialEvent {
+  id            String   @id @default(cuid())
+  campaignId    String?
+  campaign      Campaign? @relation(fields: [campaignId], references: [id])
+  transactionId String?
+  transaction   Transaction? @relation(fields: [transactionId], references: [id])
+  type          String
+  amount        Float
+  metaJson      String?
+  createdAt     DateTime @default(now())
+}
+
+model HomepageModuleConfig {
+  id        String  @id @default(cuid())
+  key       String  @unique
+  enabled   Boolean @default(true)
+  sortOrder Int     @default(100)
+  titleEn   String?
+  titleAr   String?
+  configJson String?
+}
+
+model DemoScenario {
+  id          String  @id @default(cuid())
+  key         String  @unique
+  name        String
+  description String?
+  active      Boolean @default(false)
+}
+
+model AppSession {
+  id          String   @id @default(cuid())
+  token       String   @unique
+  customerId  String?
+  role        String   @default("guest")
+  locale      String   @default("en")
+  payloadJson String?
+  expiresAt   DateTime?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}

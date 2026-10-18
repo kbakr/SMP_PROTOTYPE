@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="600" viewBox="0 0 800 600" fill="none">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="800" y2="600" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#0C4A6E"/>
+      <stop offset="0.55" stop-color="#2563EB"/>
+      <stop offset="1" stop-color="#7DD3FC"/>
+    </linearGradient>
+  </defs>
+  <rect width="800" height="600" fill="url(#bg)"/>
+  <rect x="290" y="85" width="220" height="430" rx="28" fill="#E2E8F0" stroke="#38BDF8" stroke-width="3"/>
+  <rect x="308" y="120" width="184" height="340" rx="6" fill="#020617"/>
+  <rect x="370" y="98" width="60" height="10" rx="5" fill="#64748B"/>
+  <text x="400" y="560" text-anchor="middle" fill="#E0F2FE" font-family="Georgia, serif" font-size="28">Galaxy Flagship</text>
+</svg>

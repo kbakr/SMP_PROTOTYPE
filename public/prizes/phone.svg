@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="600" viewBox="0 0 800 600" fill="none">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="800" y2="600" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#0F172A"/>
+      <stop offset="0.5" stop-color="#9F1239"/>
+      <stop offset="1" stop-color="#FB7185"/>
+    </linearGradient>
+    <linearGradient id="phone" x1="280" y1="80" x2="520" y2="520" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#F8FAFC"/>
+      <stop offset="1" stop-color="#CBD5E1"/>
+    </linearGradient>
+  </defs>
+  <rect width="800" height="600" fill="url(#bg)"/>
+  <rect x="300" y="90" width="200" height="420" rx="36" fill="url(#phone)" stroke="#94A3B8" stroke-width="4"/>
+  <rect x="318" y="130" width="164" height="320" rx="8" fill="#0F172A"/>
+  <circle cx="400" cy="470" r="14" fill="#64748B"/>
+  <text x="400" y="560" text-anchor="middle" fill="#FFE4E6" font-family="Georgia, serif" font-size="28">Flagship Pro Max</text>
+</svg>

@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="600" viewBox="0 0 800 600" fill="none">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="800" y2="600" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#134E4A"/>
+      <stop offset="0.45" stop-color="#0D9488"/>
+      <stop offset="1" stop-color="#FDE68A"/>
+    </linearGradient>
+  </defs>
+  <rect width="800" height="600" fill="url(#bg)"/>
+  <ellipse cx="400" cy="380" rx="260" ry="60" fill="#0891B2" opacity="0.7"/>
+  <path d="M120 360 C220 280 320 300 400 260 C500 210 620 240 700 200 L700 400 L120 400 Z" fill="#F59E0B" opacity="0.85"/>
+  <circle cx="620" cy="140" r="42" fill="#FEF3C7"/>
+  <text x="400" y="520" text-anchor="middle" fill="#ECFDF5" font-family="Georgia, serif" font-size="28">Red Sea Escape</text>
+</svg>
