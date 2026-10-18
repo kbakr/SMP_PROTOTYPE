@@ -2,8 +2,10 @@
 
 ## Database
 
-- **SQLite via Prisma** for zero-credential local demo (`DATABASE_URL=file:./dev.db`).
-- Schema is relational and portable; switch to PostgreSQL by changing `DATABASE_URL` and provider in `prisma/schema.prisma`.
+- **Local demo:** SQLite via Prisma (`DATABASE_URL=file:./dev.db`). Flip `provider` in `prisma/schema.prisma` to `"sqlite"` for zero-credential local runs (`npm run setup`).
+- **Production (Vercel):** `provider = "postgresql"` (current default in schema) with hosted Postgres — Neon, Vercel Postgres, or any Prisma-compatible URL in `DATABASE_URL`.
+- After setting production `DATABASE_URL`, run once: `npm run db:deploy` (db push + seed), or add that step to the Vercel build command.
+- Schema is relational and portable between SQLite and PostgreSQL for this prototype (no engine-specific types).
 
 ## Auth
 
@@ -33,3 +35,8 @@
 ## Imagery
 
 - Placeholder SVG prizes under `/public/prizes` — fictional merchants/brands for demo rights safety.
+
+## Hosting
+
+- Target: Vercel (Next.js). SQLite file DB is incompatible with serverless; production requires Postgres.
+- Env vars required on Vercel: `DATABASE_URL`, `NEXT_PUBLIC_APP_NAME`, `NEXT_PUBLIC_DEMO_MODE`, `DEMO_ADMIN_PHONE`, `DEMO_OTP_CODE`.

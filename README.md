@@ -6,15 +6,17 @@ Investor prototype: multi-campaign mega-promotion portal for Egypt (web-first, b
 ## Stack
 
 - Next.js 15 (App Router) + TypeScript + Tailwind CSS v4
-- Prisma + SQLite (`file:./dev.db`) — switch `DATABASE_URL` to PostgreSQL when ready
+- Prisma + **PostgreSQL** for production (Vercel); **SQLite** still supported for local-only demos
 - Vitest for unit/integration-style rule tests
 - Recharts for BI charts
 
-## Quick start
+## Quick start (local SQLite)
 
 ```bash
 npm install
-cp .env.example .env   # if needed
+# In prisma/schema.prisma set: provider = "sqlite"
+cp .env.example .env
+# DATABASE_URL="file:./dev.db"
 npm run setup          # prisma db push + seed
 npm run dev            # http://localhost:3000
 ```
@@ -23,10 +25,29 @@ npm run dev            # http://localhost:3000
 
 ```bash
 npm run test           # vitest
-npm run build          # production build
+npm run build          # prisma generate + next build
 npm run db:reset       # wipe + reseed deterministic demo
 npm run db:seed        # reseed only
+npm run db:deploy      # postgres: db push + seed (production/shared)
 ```
+
+## Production (Vercel + Postgres)
+
+1. Create a Postgres database (Neon free tier or Vercel Postgres) and copy the connection string.
+2. Import this GitHub repo in [Vercel](https://vercel.com/new) **or** CLI: `npx vercel link` then `npx vercel --prod`.
+3. Set environment variables (Production + Preview):
+
+| Name | Example |
+|------|---------|
+| `DATABASE_URL` | `postgresql://…?sslmode=require` |
+| `NEXT_PUBLIC_APP_NAME` | `Super Mega Promo` |
+| `NEXT_PUBLIC_DEMO_MODE` | `true` |
+| `DEMO_ADMIN_PHONE` | `+201000000001` |
+| `DEMO_OTP_CODE` | `123456` |
+
+4. After first deploy (or locally with prod `DATABASE_URL`): `npm run db:deploy` to push schema + seed demo data. Optionally change Vercel **Build Command** to `prisma generate && prisma db push && tsx prisma/seed.ts && next build` so every deploy reseeds the demo.
+
+`vercel.json` defaults to `prisma generate && next build` so builds succeed once `DATABASE_URL` is present for the Prisma client.
 
 ## Demo identities
 

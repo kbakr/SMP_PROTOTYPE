@@ -3,7 +3,10 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite"
+  // Production (Vercel): PostgreSQL via Neon / Vercel Postgres / any Prisma-compatible host.
+  // Local demo: keep SQLite by setting provider = "sqlite" and DATABASE_URL="file:./dev.db"
+  // (see README / DECISIONS.md). Only one provider can be active in this file at a time.
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 

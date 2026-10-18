@@ -1,24 +1,41 @@
 # SMP Implementation Status
 
 **Updated:** 2026-10-18  
-**App root:** `/agent`  
-**Stack:** Next.js 15 · TypeScript · Tailwind v4 · Prisma · SQLite  
-**Status:** Local demo verified · GitHub remote configured · **push blocked on auth**
+**App root:** `/agent` (also published on GitHub)  
+**Stack:** Next.js 15 · TypeScript · Tailwind v4 · Prisma · SQLite (local) / **PostgreSQL (production)**  
+**Status:** Local demo verified · Published to GitHub · **Vercel temp deploy live (needs claim + Postgres)**
+
+## Hosting / Vercel
+
+- **Temporary live URL (anonymous, ~1h expiry):** https://temporary-swift-glacier-lo7siu8.vercel.app  
+  - Claim to keep: https://vercel.com/claim-deployment?code=5c4361c2-48f3-4854-8f07-8da72c85aa26  
+  - `/` returns **500** until a real `DATABASE_URL` is set (dummy URL used for anonymous build only).  
+  - Static routes like `/investor` return **200**.
+- **Production dashboard:** not linked yet — Cloud Agent has no `VERCEL_TOKEN` / Vercel login.
+- **Repo config on `main`:** `vercel.json` (`prisma generate && next build`), Prisma `provider = "postgresql"`, `.npmrc` (`legacy-peer-deps`), `npm run db:deploy` for push+seed.
+
+### One action to unlock durable production
+
+1. Create a Vercel token at https://vercel.com/account/tokens → paste into chat **or** add Cloud Agent secret `VERCEL_TOKEN`.
+2. Create a free Postgres DB ([Neon](https://console.neon.tech) → New project → copy connection string) **or** Vercel Postgres after claiming the project → provide as `DATABASE_URL` (or secret).
+3. Agent (or you) will then: `vercel --prod`, set env vars, run `db:deploy` (schema + demo seed).
+
+Env vars required on Vercel: `DATABASE_URL`, `NEXT_PUBLIC_APP_NAME`, `NEXT_PUBLIC_DEMO_MODE`, `DEMO_ADMIN_PHONE`, `DEMO_OTP_CODE` (see `.env.example`).
 
 ## GitHub remote
 
-- **Repo:** https://github.com/kbakr/SMP_PROTOTYPE  
-- **Local `origin`:** `https://github.com/kbakr/SMP_PROTOTYPE.git`  
-- **Branch to publish:** `main` (2 commits; SQLite `*.db` and `.env` not tracked; `.env.example` kept)  
-- **Push attempt:** failed — `fatal: could not read Username for 'https://github.com': No such device or address`  
-- **Also tried:** `gh` not logged in; SSH `Permission denied (publickey)`; no `GITHUB_TOKEN` / `GH_TOKEN` in environment  
-- **Unblock:** grant credentials on this VM (see below), then `cd /agent && git push -u origin main`
+- **Live repo:** https://github.com/kbakr/SMP_PROTOTYPE  
+- **Branch:** `main`  
+- **Confirmed on GitHub:** `package.json`, `README.md`, `IMPLEMENTATION_STATUS.md`, plus `src/`, `prisma/`, `tests/`  
+- **Publish:** succeeded 2026-10-18 — full prototype history on `origin/main`
 
 ## How to run
 
 ```bash
-cd /agent
+git clone https://github.com/kbakr/SMP_PROTOTYPE.git
+cd SMP_PROTOTYPE
 npm install
+# Local SQLite: set prisma provider to "sqlite" and DATABASE_URL=file:./dev.db
 npm run setup    # db push + seed
 npm run dev      # http://localhost:3000
 npm run test
@@ -43,11 +60,12 @@ Demo OTP: `123456` · See README for persona phones.
 ## Verified
 
 - `npm run test` — **13/13 passed** (offers, voucher-before-play gates, ranking, attribution, NBA, economics, visibility)
-- `npm run build` — success
-- Production server smoke: `/`, `/campaigns`, `/lp/ig-influencer-a-phone`, `/admin`, `/api/otp`, `/api/admin/campaigns` → **200 / ok**
-- Seed: Campaigns A/B Live, C Scheduled, past Closed; Ahmed EGP350 path; Omar unused attempt; Mariam abandoner; Sara cross-campaign; provisional LB ranks; demo winner on past campaign
-- Admin show/hide/feature/order/modules + Reset Demo API
+- `npm run build` — success (local + Vercel anonymous build)
+- Production server smoke (local): `/`, `/campaigns`, `/lp/…`, `/admin`, APIs → **200 / ok**
+- Vercel anonymous deploy: build **READY**; homepage DB-bound routes need real Postgres
+- Seed: Campaigns A/B Live, C Scheduled, past Closed; Ahmed EGP350 path; demo personas
 - No real payment/OTP/SMS providers
+- GitHub publish of full prototype history — **pass**
 
 ## What works (demo)
 
@@ -68,8 +86,7 @@ Demo OTP: `123456` · See README for persona phones.
 - Admin campaign *builder* (create prizes/questions from UI) is thin — seed/API oriented; visibility/CRM/BI covered
 - Segment builder is display + seeded rules JSON, not a full visual AND/OR editor
 - Challenge UX is sequential but not deeply animated; no platform-fault free-retry UI beyond data model
-- SQLite file DB (document PostgreSQL switch in DECISIONS.md)
-- No GitHub remote yet (local git only when initialized)
+- **Production needs claimed Vercel project + hosted Postgres `DATABASE_URL` + `npm run db:deploy`**
 - Ahmed illustrative rank lands near #27–#28 depending on seed timing (deterministic within a seed run)
 - Accessibility/RTL polish can go deeper; automated e2e browser tests not included (unit tests cover rules)
 
@@ -95,10 +112,7 @@ Demo OTP: `123456` · See README for persona phones.
 Screenshots under project store:  
 `/cursor/stores/bc-01a14fe5-a9b1-7439-a682-e90c45cce73d/media/`
 
-## Next for publication
+## Next
 
-1. **Auth on this VM** (pick one), then `git push -u origin main`:
-   - Fine-grained or classic **PAT** with `repo` (and `read:org` if org-scoped): `gh auth login --with-token` or `GH_TOKEN=… git push -u origin main`
-   - Or **SSH deploy key / user key** with write access to `kbakr/SMP_PROTOTYPE`, then `git remote set-url origin git@github.com:kbakr/SMP_PROTOTYPE.git`
-   - Or Cursor/GitHub App credentials wired into the cloud agent environment
-2. Optional: switch `DATABASE_URL` to PostgreSQL for shared hosting  
+1. User: `VERCEL_TOKEN` + Neon/Vercel `DATABASE_URL` → durable `--prod` deploy + seed  
+2. Deeper AR QA / accessibility polish  
